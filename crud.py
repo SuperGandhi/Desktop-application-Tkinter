@@ -181,16 +181,16 @@ e4 = Entry(root, textvariable=last_name, width=30)
 e4.place(x=265, y=40)
 
 
-# l5 = Label(root, text= 'Dirección')
-# l5.place(x=50, y=40)
-# e5 = Entry(root, textvariable=address, width=50)
-# e5.place(x=50, y=40)
+l5 = Label(root, text= 'Dirección')
+l5.place(x=50, y=70)
+e5 = Entry(root, textvariable=address, width=50)
+e5.place(x=105, y=70)
 
 
-# l2 = Label(root, text= 'Teléfono')
-# l2.place(x=50, y=10)
-# e2 = Entry(root, textvariable=phone, width=50)
-# e2.place(x=100, y=10)
+l2 = Label(root, text= 'Teléfono')
+l2.place(x=50, y=100)
+e2 = Entry(root, textvariable=phone, width=50)
+e2.place(x=105, y=100)
 
 root.config(menu=menubar)
 
