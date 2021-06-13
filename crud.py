@@ -5,10 +5,11 @@ from tkinter import ttk
 import sqlite3
 from nltk import tree
 
+
 #Desarrollo del GUI
 
 root = Tk()
-root.title("Aplicación CRUD con Base de Datos")
+root.title('Ferreteria El Tornillo Feliz')
 root.geometry("600x350")
 
 dni= StringVar()
@@ -30,7 +31,7 @@ def conection_bd():
     try:
         cursor.execute('''
             CREATE TABLE user(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 DNI VARCHAR(60) NOT NULL,
                 NAME VARCHAR(100) NOT NULL,
                 LAST NAME VARCHAR(100) NOT NULL,
@@ -39,7 +40,7 @@ def conection_bd():
             )
 
             CREATE TABLE product(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 DESCRIPTION VARCHAR(100) NOT NULL,
                 AMOUNT INT NOT NULL,
                 PRICE VARCHAR(10) NOT NULL,
@@ -151,6 +152,8 @@ def delete():
     show()
 
 ## Colocar widgets en la VISTA
+
+# Menú
 menubar= Menu(root)
 menubasedat = Menu(menubar,tearoff=0)
 menubasedat.add_command(label='Crear/Conectar Base de Datos', command=conection_bd)
@@ -162,6 +165,8 @@ help=Menu(menubar, tearoff=0)
 help.add_command(label='Limpiar campos', command=clean_fields)
 help.add_command(label= 'Acerca', command= message)
 menubar.add_cascade(label='Ayuda', menu=help)
+
+# Etiqueta y caja de texto
 
 e1 = Entry(root, textvariable= id)
 
@@ -192,6 +197,27 @@ l2.place(x=50, y=100)
 e2 = Entry(root, textvariable=phone, width=50)
 e2.place(x=105, y=100)
 
+
+# Botones 
+
+b1=Button(root, text='Registrar', command=create)
+b1.place(x=450, y=90)
+# b2=Button(root, text='Modificar Registro', command=update)
+# b2.place(x=100 , y=90)
+# b3=Button(root, text='Mostrar Lista', command=show)
+# b3.place(x=100, y=90)
+b4=Button(root, text='Eliminar', bg= 'red', command=delete)
+b4.place(x=530, y=90)
+# b5=Button(root, text='Crear Registro', command=create)
+# b5.place(x=50 , y=90)
+
+
 root.config(menu=menubar)
 
 root.mainloop()
+
+
+
+
+
+
