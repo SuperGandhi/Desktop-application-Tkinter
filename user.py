@@ -10,42 +10,25 @@ from nltk import tree
 
 root = Tk()
 root.title('Ferreteria El Tornillo Feliz')
-root.geometry("600x350")
+root.geometry("750x350")
 
+id = StringVar()
 dni= StringVar()
 name =StringVar()
-last_name = StringVar()
 address = StringVar()
 phone = StringVar()
-
-id_product = StringVar()
-description = StringVar()
-amount = StringVar()
-price = StringVar()
-total = StringVar()
 
 def conection_bd():
     conection=sqlite3.connect('base')
     cursor=conection.cursor()
-
     try:
         cursor.execute('''
             CREATE TABLE user(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                DNI VARCHAR(60) NOT NULL,
-                NAME VARCHAR(100) NOT NULL,
-                LAST NAME VARCHAR(100) NOT NULL,
-                ADDRES VARCHAR(100) NOT NULL,
-                PHONE VARCHAR(30) NOT NULL,
-            )
-
-            CREATE TABLE product(
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                DESCRIPTION VARCHAR(100) NOT NULL,
-                AMOUNT INT NOT NULL,
-                PRICE VARCHAR(10) NOT NULL,
-                TOTAL VARCHAR(10) NOT NULL,
-            )
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            DNI INT NOT NULL,
+            NAME VARCHAR(200) NOT NULL,
+            ADDRES VARCHAR(100) NOT NULL,
+            PHONE INT NOT NULL)
             ''')
 
         messagebox.showinfo("CONEXION", "Base de datos creada exitosamente")
@@ -68,33 +51,26 @@ def end_app():
 def clean_fields():
     dni.set("")
     name.set("")
-    last_name.set("")
     address.set("")
     phone.set("")
-    id_product.set("")
-    description.set("")
-    amount.set("")
-    price.set("")
-    total.set("")
 
 def message():
     about= '''
-    Aplicación CRUD
-    Versión 1.0
+    Aplicación de Escritorio
     Tecnology Python Tkinter
     '''
-
+    messagebox.showinfo(title="Información", message=about)
 ## Metodos CRUD
 
 def create():
     conection=sqlite3.connect('base')
     cursor=conection.cursor()
     try:
-        data= id_product.get(), amount.get(), price.get()
-        cursor.execute('INSERT INTO user VALUES(NULL,?,?,?)', (data))
+        data= dni.get(), name.get(), address.get(), phone.get()
+        cursor.execute('INSERT INTO user VALUES(NULL,?,?,?,?)', (data))
         conection.commit()
     except:
-        messagebox.showwarning('Advertencia', 'Ocurrió un error al crar el registro, verifique la conexión con la base de datos')
+        messagebox.showwarning('Advertencia', 'Ocurrió un error al crear el registro, verifique la conexión con la base de datos')
         pass
     clean_fields()
     show()
@@ -107,31 +83,45 @@ def show():
         tree.delete(element)
 
     try:
-        cursor.execute('SELECT * FROM product')
+        cursor.execute('SELECT * FROM user')
         for row in cursor:
-            tree.insert('',0,text=row[0], values= (row[1], row[2], row[3]))
+            tree.insert('',0,text=row[0], values= (row[1], row[2], row[3], row[4]))
     except:
         pass
 
 ## Table
 
-tree = ttk.Treeview(height=10, columns = ('#0', '#1', '#2'))
+tree = ttk.Treeview(height=10, columns = ('#0', '#1', '#2', '#3', '#4'))
 tree.place (x=0, y=130)
-tree.column('#0', width=100)
-tree.heading('#0', text='Código', anchor= CENTER)
-tree.heading('#1', text='Descripción', anchor= CENTER)
-tree.heading('#2', text='Precio', anchor= CENTER)
-tree.column('#3', width=100)
-tree.heading('#3', text='Total', anchor= CENTER)
-#tree.heading('#5', text='Total', anchor= CENTER)
+tree.column('#0', width=50)
+tree.heading('#0', text='Id', anchor= CENTER)
+tree.heading('#1', text='Dni', anchor= CENTER)
+tree.column('#1', width=100)
+tree.heading('#2', text='Apellidos y Nombres', anchor= CENTER)
+tree.column('#2', width=240)
+tree.heading('#3', text='Dirección', anchor= CENTER)
+tree.column('#3', width=210)
+tree.heading('#4', text='Teléfono', anchor= CENTER)
+tree.column('#4', width=150)
+
+
+def select_on_click(event):
+    item= tree.identify('item', event.x, event.y)
+    id.set(tree.item(item,'text'))
+    dni.set(tree.item(item,'values')[0])
+    name.set(tree.item(item,'values')[1])
+    address.set(tree.item(item,'values')[2])
+    phone.set(tree.item(item,'values')[3])
+
+tree.bind('<Double-1>', select_on_click)
 
 
 def update():
     conection=sqlite3.connect('base')
     cursor=conection.cursor()
     try:
-        data = id_product.get(), amount.get(), price.get()
-        cursor.execute('UPDATE product SET CODIGO=?, CANTIDAD=?, PRECIO=? WHERE ID='+ id_product.get(), (data))
+        data = dni.get(), name.get(), address.get(), phone.get()
+        cursor.execute('UPDATE user SET DNI =?, NAME=?, ADDRESS=?, PHONE=? WHERE ID='+ id.get(), (data))
         conection.commit()
     except:
         messagebox.showwarning('Advertencia', 'Ocurrio un error al actualizar el registro')
@@ -144,7 +134,7 @@ def delete():
     cursor=conection.cursor()
     try:
         if messagebox.askyesno(message='¿Quiere eliminar el registros?', title='Advertencia'):
-            cursor.execute('DELETE FROM product WHERE ID='+ id_product.get())
+            cursor.execute('DELETE FROM user WHERE ID='+ id.get())
     except:
         messagebox.showwarning('Advertencia','Ocurrio un error al tratar de eliminar el registro')
         pass
@@ -170,46 +160,43 @@ menubar.add_cascade(label='Ayuda', menu=help)
 
 e1 = Entry(root, textvariable= id)
 
-l2 = Label(root, text= 'Dni')
+l2 = Label(root, text= 'Dni :')
 l2.place(x=50, y=10)
 e2 = Entry(root, textvariable=dni, width=10)
-e2.place(x=100, y=10)
+e2.place(x=85, y=10)
 
-l3= Label(root, text= 'Nombre')
+l3= Label(root, text= 'Apellidos y Nombres :')
 l3.place(x=50, y=40)
 e3 = Entry(root, textvariable=name, width=50)
-e3.place(x=100, y=40)
-
-l4 = Label(root, text= 'Apellidos')
-l4.place(x=210, y=40)
-e4 = Entry(root, textvariable=last_name, width=30)
-e4.place(x=265, y=40)
+e3.place(x=175, y=40)
 
 
-l5 = Label(root, text= 'Dirección')
+l5 = Label(root, text= 'Dirección :')
 l5.place(x=50, y=70)
 e5 = Entry(root, textvariable=address, width=50)
-e5.place(x=105, y=70)
+e5.place(x=115, y=70)
 
 
-l2 = Label(root, text= 'Teléfono')
+l2 = Label(root, text= 'Teléfono :')
 l2.place(x=50, y=100)
 e2 = Entry(root, textvariable=phone, width=50)
-e2.place(x=105, y=100)
+e2.place(x=115, y=100)
 
 
-# Botones 
+# Botones
 
 b1=Button(root, text='Registrar', command=create)
 b1.place(x=450, y=90)
-# b2=Button(root, text='Modificar Registro', command=update)
-# b2.place(x=100 , y=90)
-# b3=Button(root, text='Mostrar Lista', command=show)
-# b3.place(x=100, y=90)
-b4=Button(root, text='Eliminar', bg= 'red', command=delete)
-b4.place(x=530, y=90)
-# b5=Button(root, text='Crear Registro', command=create)
-# b5.place(x=50 , y=90)
+
+
+
+b2=Button(root, text='Mostrar Lista', bg= 'grey', command=show)
+b2.place(x=600, y=90)
+
+
+b3=Button(root, text='Eliminar', bg= 'red', command=delete)
+b3.place(x=530, y=90)
+
 
 
 root.config(menu=menubar)
