@@ -135,6 +135,7 @@ def delete():
     try:
         if messagebox.askyesno(message='¿Quiere eliminar el registros?', title='Advertencia'):
             cursor.execute('DELETE FROM user WHERE ID='+ id.get())
+            conection.commit()
     except:
         messagebox.showwarning('Advertencia','Ocurrio un error al tratar de eliminar el registro')
         pass

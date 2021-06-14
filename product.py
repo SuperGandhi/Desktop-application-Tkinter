@@ -39,12 +39,11 @@ def delete_bd():
     conection=sqlite3.connect('base')
     cursor=conection.cursor()
     if messagebox.askyesno(message='Los datos se perderán, desea continuar', title= 'Advertencia'):
-        cursor.execute('DROP TABLE user')
-        conection.commit()
+        cursor.execute('DROP TABLE product')
     else:
         pass
-    clean_fields()
-    show()
+
+
 def end_app():
     valor= messagebox.askquestion('Salir', '¿está seguro que desea salir de la aplicación?')
     if valor == "yes":
@@ -136,6 +135,7 @@ def delete():
     try:
         if messagebox.askyesno(message='¿Quiere eliminar el registros?', title='Advertencia'):
             cursor.execute('DELETE FROM product WHERE ID='+ id.get())
+            conection.commit()
     except:
         messagebox.showwarning('Advertencia','Ocurrio un error al tratar de eliminar el registro')
         pass
